@@ -80,6 +80,11 @@
             taskCount.textContent = dataThning.length; //將陣列長度渲染到taskCount的id上
         }
         //我是render結束的地方
+
+
+
+
+        
         function clearTaskListener(){
             dataThning=[];
             render();
@@ -87,7 +92,7 @@
         //清除所有任務的按鈕
         function todoListDeleteOne(e) {
             var taskIndex = 0; 
-            if(e.target.dataset.action=='remove'){ 當自訂義資料型別等於remove時之後遍歷所有畫面上的資料
+            if(e.target.dataset.action=='remove'){ //當自訂義資料型別等於remove時之後遍歷所有畫面上的資料
                 dataThning.forEach((item,key)=> {
                     if(e.target.dataset.id==item.id){
                         taskIndex= key;
