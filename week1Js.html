@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>todoList</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.css">
+    <style>
+        .completed {
+            text-decoration: line-through
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" class="container my-3">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">待辦事項</span>
+            </div>
+            <input type="text" class="form-control" placeholder="準備要做的任務" id="newTodo">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button" id="addTodo">新增</button>
+            </div>
+        </div>
+        <div class="card text-center">
+            <ul class="list-group list-group-flush text-left" id="todoList">
+            </ul>
+            <div class="card-footer d-flex justify-content-between">
+                <span>還有 <span id="taskCount">0</span> 筆任務</span>
+                <a href="#" id="clearTask">清除所有任務</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        let dataThning=[];
+        let addTodo =document.getElementById('addTodo');
+        let newTodo =document.getElementById('newTodo');
+        let todoList=document.getElementById('todoList');
+        let taskCount = document.getElementById('taskCount');
+        let clearTask = document.getElementById('clearTask');
+        addTodo.addEventListener('click',addTodoFun);
+        clearTask.addEventListener('click',clearTaskListener);
+        todoList.addEventListener('click', todoListDeleteOne);
+        todoList.addEventListener('click',checkboxListener);
+
+        function addTodoFun() {
+            if(newTodo.value.trim()!==''){//判斷取得要新增的資料，去除掉字串前後空白，並且判斷是否為空
+                dataThning.push({ //新增至陣列裡面
+                    id: Math.floor(Date.now()), //回傳自1970/01/01UTC經過的毫秒數並且回傳小於等於所給數字的最大整數
+                    title:newTodo.value,
+                    completed:false
+                });
+            }
+            newTodo.value='';//清空新增資料的欄位
+            render();//渲染畫面
+        }
+        //添加待作事情的監聽結束 也就是按下新增按鈕要做的事情
+
+       
+
+        function render() {
+            var str='';
+            dataThning.forEach(item=>{
+                str +=` <div class="d-flex">
+                <div class="form-check">
+                <input type="checkbox" class="form-check-input" ${item.completed ? 'checked' : ''} data-action="complete" data-id="${item.id}">
+                <label class="form-check-label ${item.completed ? 'completed' : ''}" data-action="complete" data-id="${item.id}"> ${item.title}</label>
+                </div>
+                <button type="button" class="close ml-auto" aria-label="Close">
+                <span aria-hidden="true" data-action="remove" data-id="${item.id}">&times;</span>
+                </button>
+                </div>
+                </li>
+                `
+            })
+            //渲染資料畫面，
+            todoList.innerHTML = str;
+            taskCount.textContent = dataThning.length; //將陣列長度渲染到taskCount的id上
+        }
+        //我是render結束的地方
+        function clearTaskListener(){
+            dataThning=[];
+            render();
+        }
+        //清除所有任務的按鈕
+        function todoListDeleteOne(e) {
+            var taskIndex = 0; 
+            if(e.target.dataset.action=='remove'){ 當自訂義資料型別等於remove時之後遍歷所有畫面上的資料
+                dataThning.forEach((item,key)=> {
+                    if(e.target.dataset.id==item.id){
+                        taskIndex= key;
+                    }
+                })
+                //當你遍歷到陣列資料等於你所勾選的資料時這時候將taskIndex存入當前索引值
+                dataThning.splice(taskIndex,1); 
+                //之後使用splice去刪除該資料，刪除一筆資料且從taskIndex索引值開始刪除
+                render();
+            }
+        }
+        //上面就是刪掉那一個待作事情 就是叉叉
+        function checkboxListener(e) {
+            if (e.target.dataset.action == 'complete') {  
+                
+                //如果dataset屬性action等於完成的時候去遍歷每個屬性
+         
+                dataThning.forEach(item=> {
+                    if (e.target.dataset.id == item.id) {
+                        if (item.completed) {
+                            item.completed = false;
+                        } else {
+                            item.completed = true;
+                        }
+                    }       //當選取的資料等於datasetid的時候則判斷 如果原先是false則把它改成true 反之亦然
+                })
+                render();
+            }
+        }
+    </script>
+</body>
+
+</html>
